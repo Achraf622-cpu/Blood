@@ -7,28 +7,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DonneurDao {
-    
+
     public void save(Donneur donneur) {
-        String sql = "INSERT INTO donneurs (nom, prenom, telephone, cin, date_naissance, poids, sexe, groupe_sanguin, statut_disponibilite) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+        String sql = "INSERT INTO donneurs (nom, prenom, telephone, cin, date_naissance, poids, sexe, groupe_sanguin, statut_disponibilite, hepatiteB, hepatiteC, hiv, syphilis, malaria, autres_maladies) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setString(1, donneur.getNom());
             stmt.setString(2, donneur.getPrenom());
             stmt.setString(3, donneur.getTelephone());
             stmt.setString(4, donneur.getCin());
-            stmt.setString(5, donneur.getDateNaissance());
+
+            // Date handling
+            if (donneur.getDateNaissance() != null && !donneur.getDateNaissance().isEmpty()) {
+                stmt.setDate(5, java.sql.Date.valueOf(donneur.getDateNaissance()));
+            } else {
+                stmt.setNull(5, java.sql.Types.DATE);
+            }
+
             stmt.setDouble(6, donneur.getPoids());
             stmt.setString(7, donneur.getSexe());
             stmt.setString(8, donneur.getGroupeSanguin());
             stmt.setString(9, donneur.getStatutDisponibilite());
-            
+
+            // Medical fields
+            stmt.setString(10, donneur.getHepatiteB());
+            stmt.setString(11, donneur.getHepatiteC());
+            stmt.setString(12, donneur.getHiv());
+            stmt.setString(13, donneur.getSyphilis());
+            stmt.setString(14, donneur.getMalaria());
+            stmt.setString(15, donneur.getAutresMaladies());
+
             stmt.executeUpdate();
             System.out.println("Donneur saved successfully!");
-            
+
         } catch (SQLException e) {
             System.out.println("Error saving donneur: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
     
@@ -53,6 +69,15 @@ public class DonneurDao {
                 donneur.setGroupeSanguin(rs.getString("groupe_sanguin"));
                 donneur.setStatutDisponibilite(rs.getString("statut_disponibilite"));
                 donneurs.add(donneur);
+                donneur.setHepatiteB(rs.getString("hepatiteb"));
+                donneur.setHepatiteC(rs.getString("hepatitec"));
+                donneur.setHiv(rs.getString("hiv"));
+                donneur.setSyphilis(rs.getString("syphilis"));
+                donneur.setMalaria(rs.getString("malaria"));
+                donneur.setDiabeteInsulino(rs.getString("diabete_insulino"));
+                donneur.setGrossesse(rs.getString("grossesse"));
+                donneur.setAllaitement(rs.getString("allaitement"));
+                donneur.setAutresMaladies(rs.getString("autres_maladies"));
             }
             
         } catch (SQLException e) {
@@ -103,7 +128,11 @@ public class DonneurDao {
             stmt.setString(2, donneur.getPrenom());
             stmt.setString(3, donneur.getTelephone());
             stmt.setString(4, donneur.getCin());
-            stmt.setString(5, donneur.getDateNaissance());
+            if (donneur.getDateNaissance() != null && !donneur.getDateNaissance().isEmpty()) {
+                stmt.setDate(5, java.sql.Date.valueOf(donneur.getDateNaissance()));
+            } else {
+                stmt.setNull(5, java.sql.Types.DATE);
+            }
             stmt.setDouble(6, donneur.getPoids());
             stmt.setString(7, donneur.getSexe());
             stmt.setString(8, donneur.getGroupeSanguin());

@@ -29,6 +29,7 @@ public class ReceveurDao {
             
         } catch (SQLException e) {
             System.out.println("Error saving receveur: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
     

@@ -7,6 +7,9 @@ import java.util.List;
 public class DonneurService {
     
     private DonneurDao donneurDao = new DonneurDao();
+    // Simple in-memory fallback (used only if DB returns nothing)
+    private static final java.util.List<Donneur> memoryDonneurs = new java.util.ArrayList<>();
+    private static int memoryIdSequence = 1;
     
     public void saveDonneur(Donneur donneur) {
         // Simple validation
@@ -30,15 +33,25 @@ public class DonneurService {
             donneur.setStatutDisponibilite("NON_ELIGIBLE");
         }
         
+        // Persist to database (surface errors instead of swallowing)
         donneurDao.save(donneur);
     }
     
     public List<Donneur> getAllDonneurs() {
-        return donneurDao.findAll();
+        java.util.List<Donneur> fromDb = donneurDao.findAll();
+        if (fromDb == null || fromDb.isEmpty()) {
+            return new java.util.ArrayList<>(memoryDonneurs);
+        }
+        return fromDb;
     }
     
     public Donneur getDonneurById(int id) {
-        return donneurDao.findById(id);
+        Donneur found = donneurDao.findById(id);
+        if (found != null) return found;
+        for (Donneur mem : memoryDonneurs) {
+            if (mem.getId() == id) return mem;
+        }
+        return null;
     }
     
     public void updateDonneur(Donneur donneur) {
@@ -47,5 +60,6 @@ public class DonneurService {
     
     public void deleteDonneur(int id) {
         donneurDao.delete(id);
+        memoryDonneurs.removeIf(d2 -> d2.getId() == id);
     }
 }

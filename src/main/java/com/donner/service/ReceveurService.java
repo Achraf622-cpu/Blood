@@ -7,6 +7,9 @@ import java.util.List;
 public class ReceveurService {
     
     private ReceveurDao receveurDao = new ReceveurDao();
+    // In-memory fallback (used only if DB returns nothing)
+    private static final java.util.List<Receveur> memoryReceveurs = new java.util.ArrayList<>();
+    private static int memoryIdSequence = 1;
 
     public void saveReceveur(Receveur receveur) {
         // Simple validation
@@ -26,11 +29,20 @@ public class ReceveurService {
     }
     
     public List<Receveur> getAllReceveurs() {
-        return receveurDao.findAll();
+        java.util.List<Receveur> fromDb = receveurDao.findAll();
+        if (fromDb == null || fromDb.isEmpty()) {
+            return new java.util.ArrayList<>(memoryReceveurs);
+        }
+        return fromDb;
     }
     
     public Receveur getReceveurById(int id) {
-        return receveurDao.findById(id);
+        Receveur r = receveurDao.findById(id);
+        if (r != null) return r;
+        for (Receveur r2 : memoryReceveurs) {
+            if (r2.getId() == id) return r2;
+        }
+        return null;
     }
     
     public void updateReceveur(Receveur receveur) {
@@ -39,5 +51,6 @@ public class ReceveurService {
     
     public void deleteReceveur(int id) {
         receveurDao.delete(id);
+        memoryReceveurs.removeIf(r -> r.getId() == id);
     }
 }

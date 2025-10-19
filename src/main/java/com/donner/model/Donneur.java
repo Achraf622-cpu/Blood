@@ -12,6 +12,15 @@ public class Donneur {
     private String sexe;
     private String groupeSanguin;
     private String statutDisponibilite;
+    private String hepatiteB;
+    private String hepatiteC;
+    private String hiv;
+    private String syphilis;
+    private String malaria;
+    private String autresMaladies;
+    private String diabeteInsulino;
+    private String grossesse;
+    private String allaitement;
     
     // Constructors
     public Donneur() {}
@@ -109,4 +118,31 @@ public class Donneur {
     public void setStatutDisponibilite(String statutDisponibilite) {
         this.statutDisponibilite = statutDisponibilite;
     }
+
+    public String getHepatiteB() { return hepatiteB; }
+    public void setHepatiteB(String hepatiteB) { this.hepatiteB = hepatiteB; }
+
+    public String getHepatiteC() { return hepatiteC; }
+    public void setHepatiteC(String hepatiteC) { this.hepatiteC = hepatiteC; }
+
+    public String getHiv() { return hiv; }
+    public void setHiv(String hiv) { this.hiv = hiv; }
+
+    public String getSyphilis() { return syphilis; }
+    public void setSyphilis(String syphilis) { this.syphilis = syphilis; }
+
+    public String getMalaria() { return malaria; }
+    public void setMalaria(String malaria) { this.malaria = malaria; }
+
+    public String getAutresMaladies() { return autresMaladies; }
+    public void setAutresMaladies(String autresMaladies) { this.autresMaladies = autresMaladies; }
+
+    public String getDiabeteInsulino() { return diabeteInsulino; }
+    public void setDiabeteInsulino(String diabeteInsulino) { this.diabeteInsulino = diabeteInsulino;}
+
+    public String getGrossesse() { return grossesse; }
+    public void setGrossesse(String grossesse) { this.grossesse = grossesse; }
+
+    public String getAllaitement() { return allaitement; }
+    public void setAllaitement(String allaitement) { this.allaitement = allaitement; }
 }

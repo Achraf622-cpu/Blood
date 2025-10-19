@@ -68,41 +68,82 @@ public class DonneurServlet extends HttpServlet {
         request.setAttribute("donneur", donneur);
         request.getRequestDispatcher("/WEB-INF/views/donneurs/edit.jsp").forward(request, response);
     }
-    
-    private void addDonneur(HttpServletRequest request, HttpServletResponse response) 
+
+    private void addDonneur(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        Donneur donneur = new Donneur();
-        donneur.setNom(request.getParameter("nom"));
-        donneur.setPrenom(request.getParameter("prenom"));
-        donneur.setTelephone(request.getParameter("telephone"));
-        donneur.setCin(request.getParameter("cin"));
-        donneur.setDateNaissance(request.getParameter("dateNaissance"));
-        donneur.setPoids(Double.parseDouble(request.getParameter("poids")));
-        donneur.setSexe(request.getParameter("sexe"));
-        donneur.setGroupeSanguin(request.getParameter("groupeSanguin"));
-        
-        donneurService.saveDonneur(donneur);
-        response.sendRedirect(request.getContextPath() + "/donneur?action=list");
+
+        try {
+            Donneur donneur = new Donneur();
+            donneur.setNom(request.getParameter("nom"));
+            donneur.setPrenom(request.getParameter("prenom"));
+            donneur.setTelephone(request.getParameter("telephone"));
+            donneur.setCin(request.getParameter("cin"));
+
+            // Date handling
+            String dateNaissanceStr = request.getParameter("dateNaissance");
+            if (dateNaissanceStr != null && !dateNaissanceStr.isEmpty()) {
+                donneur.setDateNaissance(dateNaissanceStr);
+            }
+
+            donneur.setPoids(Double.parseDouble(request.getParameter("poids")));
+            donneur.setSexe(request.getParameter("sexe"));
+            donneur.setGroupeSanguin(request.getParameter("groupeSanguin"));
+
+            // Medical screening fields
+            donneur.setHepatiteB(request.getParameter("hepatiteB"));
+            donneur.setHepatiteC(request.getParameter("hepatiteC"));
+            donneur.setHiv(request.getParameter("hiv"));
+            donneur.setSyphilis(request.getParameter("syphilis"));
+            donneur.setMalaria(request.getParameter("malaria"));
+            donneur.setAutresMaladies(request.getParameter("autresMaladies"));
+
+            // Auto-set status based on test results
+            String status = "DISPONIBLE";
+            if ("POSITIF".equals(donneur.getHepatiteB()) || "POSITIF".equals(donneur.getHepatiteC()) ||
+                    "POSITIF".equals(donneur.getHiv()) || "POSITIF".equals(donneur.getSyphilis()) ||
+                    "POSITIF".equals(donneur.getMalaria())) {
+                status = "NOT_AVAILABLE";
+            }
+            donneur.setStatutDisponibilite(status);
+
+            donneurService.saveDonneur(donneur);
+            response.sendRedirect(request.getContextPath() + "/donneur?action=list");
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Error adding donor: " + e.getMessage());
+            showAddForm(request, response);
+        }
     }
-    
-    private void updateDonneur(HttpServletRequest request, HttpServletResponse response) 
+
+    private void updateDonneur(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        Donneur donneur = new Donneur();
-        donneur.setId(Integer.parseInt(request.getParameter("id")));
-        donneur.setNom(request.getParameter("nom"));
-        donneur.setPrenom(request.getParameter("prenom"));
-        donneur.setTelephone(request.getParameter("telephone"));
-        donneur.setCin(request.getParameter("cin"));
-        donneur.setDateNaissance(request.getParameter("dateNaissance"));
-        donneur.setPoids(Double.parseDouble(request.getParameter("poids")));
-        donneur.setSexe(request.getParameter("sexe"));
-        donneur.setGroupeSanguin(request.getParameter("groupeSanguin"));
-        donneur.setStatutDisponibilite(request.getParameter("statutDisponibilite"));
-        
-        donneurService.updateDonneur(donneur);
-        response.sendRedirect(request.getContextPath() + "/donneur?action=list");
+
+        try {
+            Donneur donneur = new Donneur();
+            donneur.setId(Integer.parseInt(request.getParameter("id")));
+            donneur.setNom(request.getParameter("nom"));
+            donneur.setPrenom(request.getParameter("prenom"));
+            donneur.setTelephone(request.getParameter("telephone"));
+            donneur.setCin(request.getParameter("cin"));
+
+            // FIX: Convert date from HTML format (yyyy-MM-dd) to database format
+            String dateNaissanceStr = request.getParameter("dateNaissance");
+            if (dateNaissanceStr != null && !dateNaissanceStr.isEmpty()) {
+                donneur.setDateNaissance(dateNaissanceStr);
+            }
+
+            donneur.setPoids(Double.parseDouble(request.getParameter("poids")));
+            donneur.setSexe(request.getParameter("sexe"));
+            donneur.setGroupeSanguin(request.getParameter("groupeSanguin"));
+            donneur.setStatutDisponibilite(request.getParameter("statutDisponibilite"));
+
+            donneurService.updateDonneur(donneur);
+            response.sendRedirect(request.getContextPath() + "/donneur?action=list");
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Error updating donor: " + e.getMessage());
+            showEditForm(request, response);
+        }
     }
     
     private void deleteDonneur(HttpServletRequest request, HttpServletResponse response) 

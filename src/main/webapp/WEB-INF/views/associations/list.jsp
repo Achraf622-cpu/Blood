@@ -38,7 +38,7 @@
         <div class="max-w-6xl mx-auto px-4 py-8">
             <div class="flex items-center justify-between mb-6">
                 <h1 class="text-2xl font-bold">Associations</h1>
-                <a href="${pageContext.request.contextPath}/donneur?action=list" class="px-4 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-700">Go to Donors</a>
+                <a href="${pageContext.request.contextPath}/association?action=add" class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700">Add Association</a>
             </div>
 
             <div class="mb-4 flex gap-2 text-sm">
