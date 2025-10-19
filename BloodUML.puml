@@ -1,0 +1,280 @@
+@startuml
+class com.donner.service.ReceveurService {
+- ReceveurDao receveurDao
+- {static} java.util.List<Receveur> memoryReceveurs
+- {static} int memoryIdSequence
++ void saveReceveur(Receveur)
++ List<Receveur> getAllReceveurs()
++ Receveur getReceveurById(int)
++ void updateReceveur(Receveur)
++ void deleteReceveur(int)
+}
+
+
+class com.donner.util.DatabaseConnection {
+- {static} String ENV_URL
+- {static} String ENV_USERNAME
+- {static} String ENV_PASSWORD
+- {static} String LOCAL_PROPERTIES_PATH
+- {static} String url
+- {static} String username
+- {static} String password
+- {static} void loadConfiguration()
++ {static} Connection getConnection()
++ {static} void closeConnection(Connection)
+}
+
+
+class com.donner.dao.DonneurDao {
++ void save(Donneur)
++ List<Donneur> findAll()
++ Donneur findById(int)
++ void update(Donneur)
++ void delete(int)
+}
+
+class com.donner.service.DonneurService {
+- DonneurDao donneurDao
+- {static} java.util.List<Donneur> memoryDonneurs
+- {static} int memoryIdSequence
++ void saveDonneur(Donneur)
++ List<Donneur> getAllDonneurs()
++ Donneur getDonneurById(int)
++ void updateDonneur(Donneur)
++ void deleteDonneur(int)
+}
+
+
+class com.donner.controller.ReceveurServlet {
+- ReceveurService receveurService
+# void doGet(HttpServletRequest,HttpServletResponse)
+# void doPost(HttpServletRequest,HttpServletResponse)
+- void listReceveurs(HttpServletRequest,HttpServletResponse)
+- void showAddForm(HttpServletRequest,HttpServletResponse)
+- void showEditForm(HttpServletRequest,HttpServletResponse)
+- void addReceveur(HttpServletRequest,HttpServletResponse)
+- void updateReceveur(HttpServletRequest,HttpServletResponse)
+- void deleteReceveur(HttpServletRequest,HttpServletResponse)
+}
+
+
+class com.donner.controller.DonneurServlet {
+- DonneurService donneurService
+# void doGet(HttpServletRequest,HttpServletResponse)
+# void doPost(HttpServletRequest,HttpServletResponse)
+- void listDonneurs(HttpServletRequest,HttpServletResponse)
+- void showAddForm(HttpServletRequest,HttpServletResponse)
+- void showEditForm(HttpServletRequest,HttpServletResponse)
+- void addDonneur(HttpServletRequest,HttpServletResponse)
+- void updateDonneur(HttpServletRequest,HttpServletResponse)
+- void deleteDonneur(HttpServletRequest,HttpServletResponse)
+}
+
+
+class com.donner.model.Association {
+- int id
+- int donneurId
+- int receveurId
+- String dateAssociation
++ int getId()
++ void setId(int)
++ int getDonneurId()
++ void setDonneurId(int)
++ int getReceveurId()
++ void setReceveurId(int)
++ String getDateAssociation()
++ void setDateAssociation(String)
+}
+
+
+enum com.donner.model.enums.EtatReceveur {
++  EN_ATTENTE
++  SATISFAIT
+- String displayName
++ String getDisplayName()
++ String toString()
+}
+
+
+class com.donner.service.BloodCompatibilityService {
+- {static} Map<GroupeSanguin,Set<GroupeSanguin>> COMPATIBILITY_MAP
++ {static} boolean isCompatible(GroupeSanguin,GroupeSanguin)
++ {static} Set<GroupeSanguin> getCompatibleGroups(GroupeSanguin)
+}
+
+
+class com.donner.dao.ReceveurDao {
++ void save(Receveur)
++ List<Receveur> findAll()
++ Receveur findById(int)
++ void update(Receveur)
++ void delete(int)
+}
+
+enum com.donner.model.enums.StatutDisponibilite {
++  DISPONIBLE
++  NON_DISPONIBLE
++  NON_ELIGIBLE
+- String displayName
++ String getDisplayName()
++ String toString()
+}
+
+
+class com.donner.service.AssociationService {
+- AssociationDao associationDao
+- DonneurDao donneurDao
+- ReceveurDao receveurDao
++ void createAssociation(int,int)
++ List<Association> getAllAssociations()
++ void deleteAssociation(int)
+}
+
+
+enum com.donner.model.enums.GroupeSanguin {
++  A_POSITIF
++  A_NEGATIF
++  B_POSITIF
++  B_NEGATIF
++  AB_POSITIF
++  AB_NEGATIF
++  O_POSITIF
++  O_NEGATIF
+- String displayName
++ String getDisplayName()
++ String toString()
+}
+
+
+class com.donner.model.Receveur {
+- int id
+- String nom
+- String prenom
+- String telephone
+- String cin
+- String dateNaissance
+- String sexe
+- String groupeSanguin
+- String situationMedicale
+- String etatReceveur
++ int getId()
++ void setId(int)
++ String getNom()
++ void setNom(String)
++ String getPrenom()
++ void setPrenom(String)
++ String getTelephone()
++ void setTelephone(String)
++ String getCin()
++ void setCin(String)
++ String getDateNaissance()
++ void setDateNaissance(String)
++ String getSexe()
++ void setSexe(String)
++ String getGroupeSanguin()
++ void setGroupeSanguin(String)
++ String getSituationMedicale()
++ void setSituationMedicale(String)
++ String getEtatReceveur()
++ void setEtatReceveur(String)
+}
+
+
+class com.donner.model.Donneur {
+- int id
+- String nom
+- String prenom
+- String telephone
+- String cin
+- String dateNaissance
+- double poids
+- String sexe
+- String groupeSanguin
+- String statutDisponibilite
+- String hepatiteB
+- String hepatiteC
+- String hiv
+- String syphilis
+- String malaria
+- String autresMaladies
+- String diabeteInsulino
+- String grossesse
+- String allaitement
++ int getId()
++ void setId(int)
++ String getNom()
++ void setNom(String)
++ String getPrenom()
++ void setPrenom(String)
++ String getTelephone()
++ void setTelephone(String)
++ String getCin()
++ void setCin(String)
++ String getDateNaissance()
++ void setDateNaissance(String)
++ double getPoids()
++ void setPoids(double)
++ String getSexe()
++ void setSexe(String)
++ String getGroupeSanguin()
++ void setGroupeSanguin(String)
++ String getStatutDisponibilite()
++ void setStatutDisponibilite(String)
++ String getHepatiteB()
++ void setHepatiteB(String)
++ String getHepatiteC()
++ void setHepatiteC(String)
++ String getHiv()
++ void setHiv(String)
++ String getSyphilis()
++ void setSyphilis(String)
++ String getMalaria()
++ void setMalaria(String)
++ String getAutresMaladies()
++ void setAutresMaladies(String)
++ String getDiabeteInsulino()
++ void setDiabeteInsulino(String)
++ String getGrossesse()
++ void setGrossesse(String)
++ String getAllaitement()
++ void setAllaitement(String)
+}
+
+
+class com.donner.dao.AssociationDao {
++ void save(Association)
++ List<Association> findAll()
++ void delete(int)
+}
+
+class com.donner.controller.AssociationServlet {
+- AssociationService associationService
+- DonneurService donneurService
+- ReceveurService receveurService
+# void doGet(HttpServletRequest,HttpServletResponse)
+# void doPost(HttpServletRequest,HttpServletResponse)
+- void listAssociations(HttpServletRequest,HttpServletResponse)
+- void showAddForm(HttpServletRequest,HttpServletResponse)
+- void createAssociation(HttpServletRequest,HttpServletResponse)
+- void deleteAssociation(HttpServletRequest,HttpServletResponse)
+}
+
+
+enum com.donner.model.enums.SituationMedicale {
++  CRITIQUE
++  URGENT
++  NORMAL
+- String displayName
+- int nombrePochesRequises
++ String getDisplayName()
++ int getNombrePochesRequises()
++ String toString()
+}
+
+
+
+
+javax.servlet.http.HttpServlet <|-- com.donner.controller.ReceveurServlet
+javax.servlet.http.HttpServlet <|-- com.donner.controller.DonneurServlet
+javax.servlet.http.HttpServlet <|-- com.donner.controller.AssociationServlet
+@enduml
